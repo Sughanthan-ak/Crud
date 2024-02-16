@@ -1,60 +1,95 @@
-import './Style.css';
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 function App() {
-  const [data, setData] = useState([]);
+  const [file, setFile] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState('');
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      // Fetch data from an API endpoint
-      const response = await fetch('https://api.example.com/data');
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile && selectedFile.type.startsWith('image/')) {
+      setButtonLabel('View');
+    } else if (selectedFile && selectedFile.type.startsWith('video/')) {
+      setButtonLabel('Play');
+    } else {
+      setButtonLabel('');
     }
+    // Clear the file input field
+    e.target.value = null;
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleView = () => {
+    setOpen(true);
+  };
+
+  const handlePlay = () => {
+    setOpen(true);
   };
 
   return (
-    <div id="color">
-      <h1>CRUD Read Operation</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>01</th>
-            <th>Elakiya</th>
-            <th>elakiya.com</th>
-          </tr>
-          <tr>
-            <th>02</th>
-            <th>Sughanthan</th>
-            <th>sughanthan.com</th>
-          </tr>
-          <tr>
-            <th>03</th>
-            <th>Bala</th>
-            <th>elakiya.com</th>
-          </tr>
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <h1>File Attachment and Media Player</h1>
+      
+      <div style={{ marginTop: '20px' }}>
+        <input type="file" id="uploadImage" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} />
+        <label htmlFor="uploadImage">
+          <Button variant="contained" component="span">
+            Upload Picture
+          </Button>
+        </label>
 
-        </thead>
-        <tbody>
-          {data.map(item => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.email}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        {buttonLabel === 'View' && (
+          <Button variant="contained" onClick={handleView} style={{ marginLeft: '10px' }}>
+            View
+          </Button>
+        )}
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
+        <input type="file" id="uploadVideo" onChange={handleFileChange} accept="video/*" style={{ display: 'none' }} />
+        <label htmlFor="uploadVideo">
+          <Button variant="contained" component="span">
+            Upload Video
+          </Button>
+        </label>
+
+        {buttonLabel === 'Play' && (
+          <Button variant="contained" onClick={handlePlay} style={{ marginLeft: '10px' }}>
+            Play
+          </Button>
+        )}
+      </div>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{buttonLabel}</DialogTitle>
+        <DialogContent>
+          {file && file.type.startsWith('image/') && (
+            <img src={URL.createObjectURL(file)} alt="Uploaded Image" style={{ width: '100%' }} />
+          )}
+
+          {file && file.type.startsWith('video/') && (
+            <video controls style={{ width: '100%' }}>
+              <source src={URL.createObjectURL(file)} type={file.type} />
+              Your browser does not support the video tag.
+            </video>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 export default App;
-
