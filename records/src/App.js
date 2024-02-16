@@ -223,7 +223,7 @@ function App() {
 
   return (
     <div style={{ textAlign: 'center', background: 'linear-gradient(to right, #2980B9, #6DD5FA, #FFFFFF)', height: '100vh', paddingTop: '20px' }}>
-      <h1 style={{ marginBottom: '20px' }}>File Attachment and Media Player</h1>
+      <h1 style={{ marginBottom: '20px' }}>File Handling media upload</h1>
      
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <input type="file" id="uploadImage" onChange={(e) => handleFileChange(e, 'image')} accept="image/*" style={{ display: 'none' }} />
@@ -257,7 +257,7 @@ function App() {
         <DialogTitle>{buttonType === 'image' ? 'View' : 'Play'}</DialogTitle>
         <DialogContent>
           {file && file.type.startsWith('image/') && (
-            <img src={URL.createObjectURL(file)} alt="Uploaded Image" style={{ width: '100%' }} />
+            <img src={URL.createObjectURL(file)} alt="Uploaded" style={{ width: '100%' }} />
           )}
 
           {file && file.type.startsWith('video/') && (
